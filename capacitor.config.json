@@ -1,5 +1,6 @@
 {
   "appId": "com.emarovicdarrel.psrstudio",
   "appName": "PSR Studio",
-  "webDir": "docs"
+  "webDir": "docs",
+  "backgroundColor": "#0f1114"
 }
