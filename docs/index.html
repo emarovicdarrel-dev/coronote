@@ -4,116 +4,94 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="manifest" href="manifest.webmanifest">
-<meta name="theme-color" content="#0f1114">
+<meta name="theme-color" content="#ffffff">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
-<title>PSR Studio Keyboard</title>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<title>Rossum Grand Piano</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700&family=Cormorant+Garamond:wght@700&display=swap" rel="stylesheet">
 <style>
-:root{color-scheme:dark;--bg:#0f1114;--panel:#1d2025;--panel2:#272b32;--line:#33383f;--txt:#dfe5ec;--dim:#8a929c;--lcd:#07131d;--lcdtx:#7fe3ff;--lcddim:#2d6075;--amber:#ffb020;--red:#ff3b3b;--grn:#3ddc84;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+:root{color-scheme:light;--bg:#eef2f9;--ink:#1b2536;--dim:#6b7890;--acc:#2f6bff;--acc2:#e6eeff;--red:#e5384f;--grn:#1fa971;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;background:var(--bg);color:var(--txt);font-family:'Barlow Condensed',sans-serif;user-select:none;-webkit-user-select:none}
-.wrap{max-width:1000px;margin:0 auto;padding:12px}
-.deck{background:linear-gradient(180deg,#2c3037 0,#17191d 14%,#0c0d0f 100%);border:1px solid #3a3f47;border-top:2px solid #b8924a;border-radius:14px 14px 4px 4px;padding:12px;box-shadow:0 18px 36px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.07)}
-.top{display:flex;gap:12px;align-items:stretch}
-.lcd{flex:1;background:var(--lcd);border-radius:6px;box-shadow:inset 0 0 16px #000,0 0 0 3px #343a42;padding:8px 14px;font-family:'Share Tech Mono',monospace;color:var(--lcdtx);min-width:0}
-.r1{display:flex;justify-content:space-between;align-items:baseline;font-size:clamp(20px,5vw,30px);text-shadow:0 0 8px rgba(127,227,255,.5)}
-.r2{display:flex;justify-content:space-between;gap:8px;font-size:13px;color:var(--lcddim);margin-top:4px;flex-wrap:wrap}
-.r2 b{color:var(--lcdtx);font-weight:400}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:'Manrope',sans-serif;user-select:none;-webkit-user-select:none;overflow:hidden}
+.app{display:flex;flex-direction:column;height:100%}
+.top{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;padding:8px 10px;background:#fff;box-shadow:0 2px 12px rgba(30,50,90,.14);position:relative;z-index:5}
+.grp{display:flex;align-items:center;gap:3px;background:var(--acc2);border-radius:11px;padding:3px}
+.grp b{min-width:30px;text-align:center;font-size:13px}
+.grp span{min-width:44px;text-align:center;font:700 12px 'Manrope'}
+.btn{min-width:34px;height:34px;padding:0 10px;border:0;border-radius:9px;background:#fff;color:var(--ink);font:700 13px 'Manrope',sans-serif;cursor:pointer;box-shadow:0 1px 0 #d5dcea;touch-action:manipulation}
+.btn:active{transform:scale(.95)}
+.btn.on{background:var(--acc);color:#fff;box-shadow:none}
+#rec.on{background:var(--red)}#play.on{background:var(--grn)}
+.btn i{display:none}
+.snd{background:var(--acc);color:#fff;min-width:124px;text-align:left}
+.pill{font:700 11px 'Manrope';color:var(--dim);background:#f1f4fa;border-radius:20px;padding:6px 10px}
 #st.rec{color:var(--red)}#st.play{color:var(--grn)}
-.vol{width:120px;display:flex;flex-direction:column;justify-content:center;gap:8px;background:var(--panel2);border-radius:6px;padding:8px 12px;border:1px solid var(--line)}
-.vol label{font-size:13px;font-weight:600;color:var(--dim);letter-spacing:.06em}
-input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:4px;background:#12151a;border-radius:2px;margin:0}
-input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:26px;border-radius:3px;background:linear-gradient(#c9ced6,#8b919a);border:1px solid #000;box-shadow:0 2px 3px rgba(0,0,0,.6)}
-.grid{display:grid;gap:7px;margin-top:10px}
-.voices{grid-template-columns:repeat(auto-fill,minmax(92px,1fr))}
-.ctl{grid-template-columns:repeat(auto-fill,minmax(78px,1fr))}
-.btn{position:relative;background:linear-gradient(#4a5058,#343840);border:1px solid #0c0d10;border-bottom-width:3px;border-radius:5px;color:var(--txt);font:600 15px 'Barlow Condensed',sans-serif;padding:10px 4px 8px;cursor:pointer;touch-action:manipulation}
-.btn:active{transform:translateY(2px);border-bottom-width:1px}
-.btn i{display:block;width:16px;height:4px;margin:0 auto 5px;border-radius:2px;background:#15181c}
-.btn.on i{background:var(--amber);box-shadow:0 0 7px var(--amber)}
-#rec.on i{background:var(--red);box-shadow:0 0 7px var(--red)}
-#play.on i{background:var(--grn);box-shadow:0 0 7px var(--grn)}
-.bed{background:#08090a;border-radius:0 0 10px 10px;padding:10px 8px 8px;border:1px solid #2a2e34;border-top:5px solid #6b1d27}
-.rail{overflow:hidden;position:relative}
-#keys{position:relative;height:250px}
-.wk,.bk{position:absolute;top:0;cursor:pointer;touch-action:none}
-.wk{height:100%;transform-origin:50% 0;transition:transform .05s;background:linear-gradient(90deg,#e6dfcd 0,#fffdf6 7%,#f6f1e4 93%,#d6cfbb 100%);border-radius:0 0 7px 7px;box-shadow:inset 0 -16px 12px -10px rgba(110,95,60,.4),0 5px 3px rgba(0,0,0,.6);display:flex;align-items:flex-end;justify-content:center;padding-bottom:9px}
-.wk i{font:600 11px 'Barlow Condensed';color:#8b8269;font-style:normal;pointer-events:none}.wk i:not(.c){display:none}.lbl .wk i{display:block}
-.bk{height:63%;z-index:2;transform-origin:50% 0;transition:transform .05s;background:linear-gradient(90deg,#17191c,#42474f 28%,#1a1c20 72%,#08090a);border-radius:0 0 5px 5px;box-shadow:0 7px 6px rgba(0,0,0,.8),inset 0 -12px 8px rgba(255,255,255,.06)}
-.wk.a{transform:translateY(3px);background:linear-gradient(90deg,#d9cfb2 0,#f1e8cd 8%,#e8dcba 92%,#c9bd9a 100%);box-shadow:inset 0 -6px 14px rgba(201,162,90,.65),0 1px 1px rgba(0,0,0,.6)}
-.bk.a{transform:translateY(3px);background:linear-gradient(90deg,#101113,#2d3137 28%,#131518 72%,#050506);box-shadow:0 2px 3px rgba(0,0,0,.8),inset 0 -8px 10px rgba(201,162,90,.35)}
-#sc{margin-top:10px}
-.note{font-size:12px;color:var(--dim);text-align:center;margin:10px 4px 0;line-height:1.4}
-.deck,.bed{transition:transform .9s cubic-bezier(.2,.8,.2,1),opacity .9s}
-.boot .deck{opacity:0;transform:translateY(-26px)}.boot .bed{opacity:0;transform:translateY(34px)}
-#intro{position:fixed;inset:0;z-index:99;display:flex;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(ellipse at 50% 40%,#1a1d22,#060708 70%);transition:opacity .8s,visibility 0s .8s}
-#intro.go{opacity:0;visibility:hidden}
-#intro h1{margin:0;font:600 clamp(34px,9vw,68px) 'Barlow Condensed',sans-serif;color:#ead9b0;opacity:0;animation:lg 1.3s .2s forwards}
-@keyframes lg{from{opacity:0;letter-spacing:.9em;filter:blur(8px)}to{opacity:1;letter-spacing:.32em;filter:none}}
-#intro .ln{height:2px;width:0;margin:12px 0 10px;background:linear-gradient(90deg,transparent,#c9a25a,transparent);animation:lw 1.1s .9s forwards}
-@keyframes lw{to{width:min(60vw,380px)}}
-#intro p{margin:0;font:13px 'Share Tech Mono',monospace;letter-spacing:.3em;color:#7fe3ff;opacity:0;animation:fi 1s 1.2s forwards}
-@keyframes fi{to{opacity:.85}}
-#intro .bar{width:min(50vw,240px);height:3px;margin-top:22px;background:#1d2024;border-radius:2px;overflow:hidden}
-#intro .bar b{display:block;height:100%;width:0;background:#7fe3ff;animation:ld 2.1s .4s forwards}
-@keyframes ld{to{width:100%}}
-#menu{position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.72)}#menu.on{display:flex}
-#menu .sheet{width:min(92vw,580px);max-height:92vh;overflow:auto;background:#15171b;border:1px solid #3a3f47;border-top:2px solid #b8924a;border-radius:10px;padding:12px}
+#vol{width:84px;margin-left:auto}
+input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:#cfd8e8;border-radius:2px;margin:0}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:var(--acc);border:3px solid #fff;box-shadow:0 1px 4px rgba(30,50,90,.4)}
+#mini{position:relative;height:30px;margin:8px 10px 0;background:#fff;border-radius:6px;overflow:hidden;box-shadow:inset 0 0 0 1px #d5dcea;touch-action:none}
+.mw{position:absolute;top:0;bottom:0;border-right:1px solid #d5dcea}
+.mb{position:absolute;top:0;height:62%;background:#2a2f3a;border-radius:0 0 2px 2px}
+#win{position:absolute;top:0;bottom:0;border:2px solid var(--acc);background:rgba(47,107,255,.16);border-radius:5px;pointer-events:none}
+.stage{flex:1;min-height:0;display:flex;flex-direction:column;margin:8px 10px 10px;padding:8px 8px 6px;background:linear-gradient(#cdd7e8,#b5c2d8);border-radius:10px;border-top:4px solid #d9485d}
+.rail{flex:1;min-height:0;overflow:hidden;position:relative}
+#keys{position:relative;height:100%}
+#sc{display:none}
+.wk,.bk{position:absolute;top:0;cursor:pointer;touch-action:none;transform-origin:50% 0;transition:transform .05s}
+.wk{height:100%;background:linear-gradient(180deg,#fff 0,#fbfcfe 72%,#e4e9f2 100%);border-radius:0 0 9px 9px;box-shadow:inset 0 -12px 10px -8px rgba(40,60,100,.28),0 3px 0 #c6cfdd,0 7px 8px rgba(30,50,90,.22);display:flex;align-items:flex-end;justify-content:center;padding-bottom:10px}
+.wk i{font:700 11px 'Manrope';color:#8a97ad;font-style:normal;pointer-events:none}
+.wk i:not(.c){display:none}.lbl .wk i{display:block}
+.bk{height:62%;z-index:2;background:linear-gradient(90deg,#222733,#3b4252 30%,#161a23 75%,#0b0d12);border-radius:0 0 7px 7px;box-shadow:0 7px 8px rgba(20,30,50,.5),inset 0 -10px 8px rgba(255,255,255,.08)}
+.wk.a{transform:translateY(3px);background:linear-gradient(#d6e4ff,#9dbcff);box-shadow:0 1px 0 #9db0d6}
+.bk.a{transform:translateY(3px);background:linear-gradient(#3a72ff,#1d44b3);box-shadow:0 2px 3px rgba(20,30,50,.5)}
+.grid{display:grid;gap:7px}
+.voices{grid-template-columns:repeat(auto-fill,minmax(120px,1fr))}
 .mg{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
-@media(prefers-reduced-motion:reduce){#intro{display:none}.deck,.bed{transition:none}.boot .deck,.boot .bed{opacity:1;transform:none}}
-@media(max-width:560px){.vol{width:92px}#keys{height:230px}}
-@media (orientation:landscape) and (max-height:520px){
-.wrap{padding:6px 8px}
-.deck{padding:6px;border-radius:10px 10px 0 0}
-.vol{width:110px;padding:4px 10px}.vol label{font-size:11px}
-.lcd{padding:4px 10px}.r1{font-size:20px}.r2{margin-top:0;font-size:11px}
-.grid{gap:4px;margin-top:5px}
-.voices{grid-template-columns:repeat(9,1fr)}.ctl{grid-template-columns:repeat(10,1fr)}
-.btn{padding:5px 2px 4px;font-size:12px;border-bottom-width:2px}
-.btn i{height:3px;margin-bottom:3px}
-#keys{height:calc(100vh - 170px);height:calc(100dvh - 170px);min-height:100px}
-.bed{padding:6px 6px 4px}#sc{margin-top:6px}.note{display:none}
-}
+.grid .btn{height:auto;min-height:42px;padding:10px 8px;background:#f1f4fa}
+.grid .btn.on{background:var(--acc)}
+.ov{position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;background:rgba(20,30,50,.45)}.ov.on{display:flex}
+.sheet{width:min(92vw,580px);max-height:90vh;overflow:auto;background:#fff;border-radius:14px;padding:12px;box-shadow:0 20px 50px rgba(20,30,50,.4)}
+.note{font-size:11px;color:var(--dim);text-align:center;margin-top:10px}
+.top,.stage,#mini{transition:transform .9s cubic-bezier(.2,.8,.2,1),opacity .9s}
+.boot .top{opacity:0;transform:translateY(-100%)}.boot .stage,.boot #mini{opacity:0;transform:translateY(40px)}
+#intro{position:fixed;inset:0;z-index:99;display:flex;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(ellipse at 50% 40%,#fff,#dbe5f5 75%);transition:opacity .8s,visibility 0s .8s}
+#intro.go{opacity:0;visibility:hidden}
+#intro h1{margin:0;font:700 clamp(40px,10vw,76px) 'Cormorant Garamond',serif;color:#1b2536;opacity:0;animation:lg 1.3s .2s forwards}
+@keyframes lg{from{opacity:0;letter-spacing:.8em;filter:blur(8px)}to{opacity:1;letter-spacing:.26em;filter:none}}
+#intro .ln{height:2px;width:0;margin:10px 0 12px;background:linear-gradient(90deg,transparent,#2f6bff,transparent);animation:lw 1.1s .9s forwards}
+@keyframes lw{to{width:min(60vw,380px)}}
+#intro p{margin:0;font:700 12px 'Manrope';letter-spacing:.45em;color:#2f6bff;opacity:0;animation:fi 1s 1.2s forwards}
+@keyframes fi{to{opacity:1}}
+#intro .bar{width:min(50vw,240px);height:3px;margin-top:22px;background:#cfd8e8;border-radius:2px;overflow:hidden}
+#intro .bar b{display:block;height:100%;width:0;background:#2f6bff;animation:ld 2.1s .4s forwards}
+@keyframes ld{to{width:100%}}
+@media(prefers-reduced-motion:reduce){#intro{display:none}.top,.stage,#mini{transition:none}.boot .top,.boot .stage,.boot #mini{opacity:1;transform:none}}
 </style>
 </head>
 <body class="boot">
-<div id="intro"><h1>PSR STUDIO</h1><div class="ln"></div><p>DIGITAL STAGE PIANO</p><div class="bar"><b></b></div></div>
-<div class="wrap">
- <div class="deck">
-  <div class="top">
-   <div class="lcd">
-    <div class="r1"><span id="vn"></span><span id="st">READY</span></div>
-    <div class="r2"><span id="l2"></span><span>NOTE <b id="ln">--</b></span><span>TEMPO <b id="bpm">100</b></span></div>
-   </div>
-   <div class="vol"><label for="vol">MASTER</label><input type="range" id="vol" min="0" max="1" step=".01" value=".75"></div>
-  </div>
-  <div class="grid voices" id="vb"></div>
-  <div class="grid ctl">
-   <button class="btn" id="rec"><i></i>REC</button>
-   <button class="btn" id="play"><i></i>PLAY</button>
-   <button class="btn" id="stop"><i></i>STOP</button>
-   <button class="btn" id="met"><i></i>METRONOME</button>
-   <button class="btn" id="bm"><i></i>TEMPO −</button>
-   <button class="btn" id="bp"><i></i>TEMPO +</button>
-   <button class="btn" id="sus"><i></i>SUSTAIN</button>
-   <button class="btn" id="od"><i></i>OCTAVE −</button>
-   <button class="btn" id="ou"><i></i>OCTAVE +</button>
-   <button class="btn" id="mn"><i></i>MENU</button>
-  </div>
- </div>
- <div class="bed">
-  <div class="rail" id="rail"><div id="keys"></div></div>
-  <input type="range" id="sc" min="0" max="100" value="0" aria-label="Scroll keys">
- </div>
- <div class="note">Computer keys: A S D F G H J K and W E T Y U play notes · Z / X change octave · Space = sustain</div>
+<div id="intro"><h1>ROSSUM</h1><div class="ln"></div><p>GRAND PIANO</p><div class="bar"><b></b></div></div>
+<div class="app">
+ <header class="top">
+  <button class="btn snd" id="sndb"><span id="vn"></span> ▾</button>
+  <span class="pill" id="st">READY</span>
+  <div class="grp"><button class="btn" id="rec">● REC</button><button class="btn" id="play">▶</button><button class="btn" id="stop">■</button></div>
+  <div class="grp"><button class="btn" id="met">♩</button><button class="btn" id="bm">−</button><b id="bpm">100</b><button class="btn" id="bp">+</button></div>
+  <button class="btn" id="sus">SUSTAIN</button>
+  <div class="grp"><button class="btn" id="od">‹</button><span id="l2"></span><button class="btn" id="ou">›</button></div>
+  <span class="pill" id="ln">--</span>
+  <input type="range" id="vol" min="0" max="1" step=".01" value=".75" aria-label="Volume">
+  <button class="btn" id="mn">⚙</button>
+ </header>
+ <div id="mini"><div id="win"></div></div>
+ <div class="stage"><div class="rail" id="rail"><div id="keys"></div></div><input type="range" id="sc" min="0" max="100" value="0"></div>
 </div>
-<div id="menu"><div class="sheet"><div class="grid mg">
+<div class="ov" id="vs"><div class="sheet"><div class="grid voices" id="vb"></div></div></div>
+<div class="ov" id="menu"><div class="sheet"><div class="grid mg">
 <button class="btn" id="m_rv"></button><button class="btn" id="m_ly"></button><button class="btn" id="m_tc"></button><button class="btn" id="m_lb"></button><button class="btn" id="m_sz"></button>
 <button class="btn" id="m_sv"><i></i>SAVE TAKE</button><button class="btn" id="m_ns"></button><button class="btn" id="m_ds"><i></i>DELETE SONG</button><button class="btn" id="m_ex"><i></i>EXPORT MIDI</button><button class="btn" id="m_x"><i></i>CLOSE</button>
-</div></div></div>
+</div><div class="note">Piano samples: Salamander Grand Piano by Alexander Holm (CC BY 3.0)</div></div></div>
 <script>
 (function(){
 "use strict";
@@ -125,11 +103,31 @@ function init(){
   master=ac.createGain();master.gain.value=+$('vol').value;
   const c=ac.createDynamicsCompressor();c.threshold.value=-10;c.knee.value=12;c.ratio.value=3;c.attack.value=.003;c.release.value=.2;const cv=ac.createConvolver();cv.buffer=mkIR();wetG=ac.createGain();wetG.gain.value=WET[rv];master.connect(c);master.connect(cv);cv.connect(wetG).connect(c);c.connect(ac.destination);
   nb=ac.createBuffer(1,ac.sampleRate,ac.sampleRate);
-  const d=nb.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;
+  const d=nb.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;loadSamples();
  }
  if(ac.state!=='running')ac.resume();
 }
 const hz=m=>440*Math.pow(2,(m-69)/12);
+const bufs={};let sload=0,sstart=0;
+async function loadSamples(){
+ if(sstart)return;sstart=1;
+ const NS=['C','Cs','D','Ds','E','F','Fs','G','Gs','A','As','B'];
+ for(let m=21;m<=108;m+=3){
+  const f=NS[m%12]+(Math.floor(m/12)-1)+'.mp3';
+  for(const u of ['samples/'+f,'https://tonejs.github.io/audio/salamander/'+f]){
+   try{const r=await fetch(u);if(!r.ok)continue;bufs[m]=await ac.decodeAudioData(await r.arrayBuffer());break;}catch(e){}
+  }
+  sload++;$('ln').textContent=sload<30?'LOAD '+sload+'/30':'PIANO';
+ }
+}
+function samp(m,vl){
+ vl=vl||1;const m0=21+3*Math.round((m-21)/3),b=bufs[m0];if(!b)return null;
+ const t=ac.currentTime,s=ac.createBufferSource(),f=ac.createBiquadFilter(),g=ac.createGain();
+ s.buffer=b;s.playbackRate.value=Math.pow(2,(m-m0)/12);
+ f.type='lowpass';f.frequency.value=2500+13500*vl;g.gain.value=.4+.6*vl;
+ s.connect(f).connect(g).connect(master);s.start(t);
+ return{stop(){const n=ac.currentTime,r=m<60?.5:.25;g.gain.cancelScheduledValues(n);g.gain.setValueAtTime(g.gain.value,n);g.gain.linearRampToValueAtTime(0,n+r);s.stop(n+r+.05);}};
+}
 function build(f,o,vl){vl=vl||1;
  const t=ac.currentTime,out=ac.createGain();out.gain.value=0;out.connect(master);
  let dest=out;
@@ -164,7 +162,7 @@ function drum(m){
  return{stop(){}};
 }
 const V={
- piano:{n:'GRAND PIANO',o:{p:[[1,.6,'triangle'],[2,.3,'sine'],[3,.14,'sine'],[4,.08,'sine']],a:.006,pk:.85,sus:.28,d:.35,end:8,f:[6200,1200,2.2,.4],rel:.35}},
+ piano:{n:'GRAND PIANO',sam:1,o:{p:[[1,.6,'triangle'],[2,.3,'sine'],[3,.14,'sine'],[4,.08,'sine']],a:.006,pk:.85,sus:.28,d:.35,end:8,f:[6200,1200,2.2,.4],rel:.35}},
  epiano:{n:'E.PIANO',o:{p:[[1,.6,'sine'],[2,.2,'sine'],[4,.08,'sine']],a:.01,pk:.7,sus:.22,d:.6,end:3.5,f:[5000,1500,1],rel:.25}},
  organ:{n:'PIPE ORGAN',o:{p:[[1,.5,'sine'],[2,.35,'sine'],[3,.18,'sine'],[4,.14,'sine'],[6,.08,'sine']],a:.03,pk:.5,rel:.12}},
  strings:{n:'STRINGS',o:{p:[[1,.4,'sawtooth',-8],[1,.4,'sawtooth',8],[2,.12,'sawtooth']],a:.35,pk:.4,f:[1800,2400,.5,.7],rel:.5}},
@@ -180,7 +178,7 @@ let recording=false,playing=false,take=[],t0=0,timers=[];
 const nm=m=>['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'][m%12]+(Math.floor(m/12)-1);
 function lcd(){
  $('vn').textContent=V[voice].n;
- $('l2').textContent='OCT '+oct+'  C'+oct+'-C'+(oct+1);
+ $('l2').textContent='OCT '+oct;
  $('bpm').textContent=bpm;
  const s=$('st');
  s.textContent=recording?'● REC':playing?'▶ PLAY':'READY';
@@ -190,7 +188,7 @@ function on(m,v,pb,vl){
  init();const ex=act.get(m);if(ex){if(ex.hd)return;ex.h.stop();act.delete(m);}
  if(act.size>=24){const k0=act.keys().next().value;act.get(k0).h.stop();act.delete(k0);paint(k0,0);}
  v=v||voice;
- const mk=id=>V[id].drum?drum(m):build(hz(m),V[id].o,vl);const h1=mk(v),h2=lyr&&lyr!==v?mk(lyr):null;const h={stop(){h1.stop();if(h2)h2.stop();}};
+ const mk=id=>V[id].drum?drum(m):(V[id].sam&&samp(m,vl))||build(hz(m),V[id].o,vl);const h1=mk(v),h2=lyr&&lyr!==v?mk(lyr):null;const h={stop(){h1.stop();if(h2)h2.stop();}};
  act.set(m,{h,s:false,pb,hd:1});
  paint(m,1);
  $('ln').textContent=V[v].drum?DRUMS[m%6]:nm(m);
@@ -266,7 +264,7 @@ for(let m=36;m<=96;m++){
 function paint(m,x){if(kel[m])kel[m].classList.toggle('a',!!x);}
 addEventListener('pointerup',()=>{down=false;});
 const rail=$('rail'),sc=$('sc');
-function fit(){sc.max=Math.max(0,keys.scrollWidth-rail.clientWidth);}
+function fit(){sc.max=Math.max(0,keys.scrollWidth-rail.clientWidth);uw();}
 function go(m){fit();rail.scrollLeft=Math.max(0,kel[m].offsetLeft-20);sc.value=rail.scrollLeft;}
 sc.oninput=()=>{rail.scrollLeft=+sc.value;};
 addEventListener('resize',()=>{calcW();lay();});
@@ -296,6 +294,19 @@ Object.keys(V).forEach(id=>{
 $('vol').oninput=e=>{if(master)master.gain.value=+e.target.value;};
 lcd();
 setTimeout(()=>go(48),50);
+const mini=$('mini'),win=$('win');
+for(let m=36;m<=96;m++){const o=Math.floor((m-36)/12),n=m%12,e=document.createElement('div');
+ if(n in WI){e.className='mw';e.style.left=(o*7+WI[n])/36*100+'%';e.style.width=100/36+'%';}
+ else{e.className='mb';e.style.left=(o*7+BC[n]-.3)/36*100+'%';e.style.width=.6/36*100+'%';}
+ mini.appendChild(e);}
+function uw(){const w=keys.scrollWidth||1;win.style.width=Math.min(100,rail.clientWidth/w*100)+'%';win.style.left=rail.scrollLeft/w*100+'%';}
+rail.addEventListener('scroll',uw);
+const mv=ev=>{const r=mini.getBoundingClientRect();rail.scrollLeft=(ev.clientX-r.left)/r.width*keys.scrollWidth-rail.clientWidth/2;};
+let md=0;mini.onpointerdown=ev=>{md=1;mini.setPointerCapture(ev.pointerId);mv(ev);};mini.onpointermove=ev=>{if(md)mv(ev);};mini.onpointerup=mini.onpointercancel=()=>{md=0;};
+uw();
+$('sndb').onclick=()=>$('vs').classList.add('on');
+$('vs').onclick=ev=>{if(ev.target.id==='vs'||ev.target.closest('#vb'))$('vs').classList.remove('on');};
+$('menu').onclick=ev=>{if(ev.target.id==='menu')$('menu').classList.remove('on');};
 const SZ=[.8,1,1.25];let songs=[],si=0;try{songs=JSON.parse(localStorage.getItem('psr_songs')||'[]')}catch(e){}
 const keep=()=>{try{localStorage.setItem('psr_songs',JSON.stringify(songs))}catch(e){}};
 const mt=()=>{const b=document.body.classList.contains('lbl');

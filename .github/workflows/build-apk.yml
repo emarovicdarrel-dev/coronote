@@ -30,8 +30,15 @@ jobs:
               convert docs/icon-512.png -resize ${s}x${s} $R/mipmap-$d/$n.png
             done
           done
-          convert -size 2732x2732 xc:'#0f1114' docs/icon-512.png -gravity center -composite /tmp/splash.png
+          convert -size 2732x2732 xc:'#eef2f9' docs/icon-512.png -gravity center -composite /tmp/splash.png
           find $R -name 'splash.png' -exec cp /tmp/splash.png {} \;
+      - name: Bundle piano samples
+        run: |
+          mkdir -p docs/samples
+          B=https://tonejs.github.io/audio/salamander
+          for f in A0 C8; do curl -fsSL -o docs/samples/$f.mp3 $B/$f.mp3; done
+          for o in 1 2 3 4 5 6 7; do for n in C Ds Fs A; do curl -fsSL -o docs/samples/$n$o.mp3 $B/$n$o.mp3; done; done
+          ls docs/samples | wc -l
       - run: npx cap sync android
       - name: Build debug APK
         run: cd android && chmod +x gradlew && ./gradlew assembleDebug

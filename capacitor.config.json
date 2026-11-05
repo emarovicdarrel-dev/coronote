@@ -1,6 +1,6 @@
 {
-  "appId": "com.emarovicdarrel.psrstudio",
-  "appName": "PSR Studio",
+  "appId": "com.emarovicdarrel.rossumpiano",
+  "appName": "Rossum Grand Piano",
   "webDir": "docs",
-  "backgroundColor": "#0f1114"
+  "backgroundColor": "#eef2f9"
 }
