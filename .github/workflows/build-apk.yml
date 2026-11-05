@@ -66,10 +66,10 @@ jobs:
           for p in mdpi:48 hdpi:72 xhdpi:96 xxhdpi:144 xxxhdpi:192; do
             d=${p%%:*}; s=${p##*:}
             for n in ic_launcher ic_launcher_round ic_launcher_foreground; do
-              convert docs/icon-512.png -resize ${s}x${s} $R/mipmap-$d/$n.png
+              convert docs/icon-round.png -resize ${s}x${s} $R/mipmap-$d/$n.png
             done
           done
-          convert -size 2732x2732 xc:'#eef2f9' docs/icon-512.png -gravity center -composite /tmp/splash.png
+          convert -size 2732x2732 xc:'#eef2f9' docs/icon-round.png -gravity center -composite /tmp/splash.png
           find $R -name 'splash.png' -exec cp /tmp/splash.png {} \;
       - name: Bundle piano samples
         run: |

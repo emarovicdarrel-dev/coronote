@@ -67,6 +67,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;heigh
 @keyframes lw{to{width:min(60vw,380px)}}
 #intro p{margin:0;font:700 12px 'Manrope';letter-spacing:.45em;color:#2f6bff;opacity:0;animation:fi 1s 1.2s forwards}
 @keyframes fi{to{opacity:1}}
+#intro svg{width:96px;height:96px;margin-bottom:14px;opacity:0;animation:fi .9s .1s forwards}
 #intro .bar{width:min(50vw,240px);height:3px;margin-top:22px;background:#cfd8e8;border-radius:2px;overflow:hidden}
 #intro .bar b{display:block;height:100%;width:0;background:#2f6bff;animation:ld 2.1s .4s forwards}
 @keyframes ld{to{width:100%}}
@@ -74,7 +75,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;heigh
 </style>
 </head>
 <body class="boot">
-<div id="intro"><h1>ROSSUM</h1><div class="ln"></div><p>GRAND PIANO</p><div class="bar"><b></b></div></div>
+<div id="intro"><svg viewBox="0 0 130 130" aria-hidden="true"><rect width="130" height="130" rx="28" fill="#fff"/><path d="M34 98 V44 Q34 30 50 30 H66 Q100 32 98 62 Q96 80 98 98 Z" fill="#2f6bff"/><path d="M42 90 V46 Q42 38 52 38 H66" fill="none" stroke="#7fa3ff" stroke-width="3" stroke-linecap="round"/><rect x="38" y="98" width="56" height="12" rx="2" fill="#fff" stroke="#1b2536" stroke-width="1.5"/><path d="M48 98.5v7M56 98.5v7M70 98.5v7M78 98.5v7M86 98.5v7" stroke="#1b2536" stroke-width="4"/><rect x="56" y="48" width="6" height="30" fill="#fff"/><path d="M62 51 H70 A7 7 0 0 1 70 65 H62" fill="none" stroke="#fff" stroke-width="6"/><path d="M68 66 L76 78" stroke="#fff" stroke-width="6"/></svg><h1>ROSSUM</h1><div class="ln"></div><p>GRAND PIANO</p><div class="bar"><b></b></div></div>
 <div class="app">
  <header class="top">
   <button class="btn snd" id="sndb"><span id="vn"></span> ▾</button>
