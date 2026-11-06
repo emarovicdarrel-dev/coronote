@@ -109,12 +109,12 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;heigh
 (function(){
 "use strict";
 const $=id=>document.getElementById(id);
-let ac,master,nb,wetG,rv=1,lyr='',touch=0,vk=0,L={run:0};const WET=[0,.12,.3],RVN=['OFF','ROOM','HALL'];function mkIR(){const n=ac.sampleRate*1.2|0,b=ac.createBuffer(2,n,ac.sampleRate);for(let c=0;c<2;c++){const d=b.getChannelData(c);for(let i=0;i<n;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/n,4);}return b;}
+let ac,master,nb,wetG,rv=0,lyr='',touch=0,vk=0,cvN,L={run:0};const WET=[0,.12,.3],RVN=['OFF','ROOM','HALL'];function mkIR(){const n=ac.sampleRate*.9|0,b=ac.createBuffer(2,n,ac.sampleRate);for(let c=0;c<2;c++){const d=b.getChannelData(c);for(let i=0;i<n;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/n,4);}return b;}
 function init(){
  if(!ac){
   ac=new(window.AudioContext||window.webkitAudioContext)();
   master=ac.createGain();master.gain.value=+$('vol').value;
-  const c=ac.createDynamicsCompressor();c.threshold.value=-10;c.knee.value=12;c.ratio.value=3;c.attack.value=.003;c.release.value=.2;const cv=ac.createConvolver();cv.buffer=mkIR();wetG=ac.createGain();wetG.gain.value=WET[rv];master.connect(c);master.connect(cv);cv.connect(wetG).connect(c);c.connect(ac.destination);
+  const c=ac.createDynamicsCompressor();c.threshold.value=-3;c.knee.value=18;c.ratio.value=4;c.attack.value=.005;c.release.value=.3;const cv=ac.createConvolver();cvN=cv;cv.buffer=mkIR();wetG=ac.createGain();wetG.gain.value=WET[rv];master.connect(c);cv.connect(wetG).connect(c);c.connect(ac.destination);if(rv>0)master.connect(cv);
   nb=ac.createBuffer(1,ac.sampleRate,ac.sampleRate);
   const d=nb.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;loadSamples();
  }
@@ -122,13 +122,14 @@ function init(){
 }
 const hz=m=>440*Math.pow(2,(m-69)/12);
 const bufs={};let sload=0,sstart=0;
+function trim(b){const n=Math.min(b.length,b.sampleRate*9|0),o=ac.createBuffer(1,n,b.sampleRate),d=o.getChannelData(0),c0=b.getChannelData(0),c1=b.numberOfChannels>1?b.getChannelData(1):c0;for(let i=0;i<n;i++)d[i]=(c0[i]+c1[i])*.5;const f=b.sampleRate*.6|0;for(let i=0;i<f&&n>f;i++)d[n-1-i]*=i/f;return o;}
 async function loadSamples(){
  if(sstart)return;sstart=1;
  const NS=['C','Cs','D','Ds','E','F','Fs','G','Gs','A','As','B'];
  for(let m=21;m<=108;m+=3){
   const f=NS[m%12]+(Math.floor(m/12)-1)+'.mp3';
   for(const u of ['samples/'+f,'https://tonejs.github.io/audio/salamander/'+f]){
-   try{const r=await fetch(u);if(!r.ok)continue;bufs[m]=await ac.decodeAudioData(await r.arrayBuffer());break;}catch(e){}
+   try{const r=await fetch(u);if(!r.ok)continue;bufs[m]=trim(await ac.decodeAudioData(await r.arrayBuffer()));break;}catch(e){}
   }
   sload++;$('ln').textContent=sload<30?'LOAD '+sload+'/30':'PIANO';
  }
@@ -137,7 +138,7 @@ function samp(m,vl){
  vl=vl||1;const m0=21+3*Math.round((m-21)/3),b=bufs[m0];if(!b)return null;
  const t=ac.currentTime,s=ac.createBufferSource(),f=ac.createBiquadFilter(),g=ac.createGain();
  s.buffer=b;s.playbackRate.value=Math.pow(2,(m-m0)/12);
- f.type='lowpass';f.frequency.value=2500+13500*vl;g.gain.value=.4+.6*vl;
+ f.type='lowpass';f.frequency.value=2500+13500*vl;g.gain.value=(.4+.6*vl)*.75;
  s.connect(f).connect(g).connect(master);s.start(t);
  return{stop(){const n=ac.currentTime,r=m<60?.22:.12;g.gain.cancelScheduledValues(n);g.gain.setValueAtTime(g.gain.value,n);g.gain.linearRampToValueAtTime(0,n+r);s.stop(n+r+.05);}};
 }
@@ -186,7 +187,7 @@ const V={
  drums:{n:'DRUM KIT',drum:1}
 };
 let voice='piano',oct=3,sustain=false,down=false;
-const PT={};try{const c=JSON.parse(localStorage.getItem('rossum_cfg')||'{}');vk=c.vk||0;rv=c.rv==null?1:c.rv;lyr=c.lyr||'';touch=c.touch?1:0;if(c.voice&&V[c.voice])voice=c.voice;if(c.lbl)document.body.classList.add('lbl');if(c.vol!=null)$('vol').value=c.vol;}catch(e){}
+const PT={};try{const c=JSON.parse(localStorage.getItem('rossum_cfg')||'{}');vk=c.vk||0;rv=c.rv==null?0:c.rv;lyr=c.lyr||'';touch=c.touch?1:0;if(c.voice&&V[c.voice])voice=c.voice;if(c.lbl)document.body.classList.add('lbl');if(c.vol!=null)$('vol').value=c.vol;}catch(e){}
 const act=new Map();
 let recording=false,playing=false,take=[],t0=0,timers=[];
 const nm=m=>['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'][m%12]+(Math.floor(m/12)-1);
@@ -368,7 +369,7 @@ $('m_rv').innerHTML='<i></i>REVERB: '+RVN[rv];$('m_ly').innerHTML='<i></i>LAYER:
 saveCfg();$('m_rh').innerHTML='<i></i>RHYTHM: '+RH[rhP].n;$('m_rh').classList.toggle('on',rhP>0);$('m_ln').innerHTML='<i></i>LEARN: '+(L.run?SONGS[L.si].n:'OFF');$('m_ln').classList.toggle('on',!!L.run);$('m_rv').classList.toggle('on',rv>0);$('m_ly').classList.toggle('on',!!lyr);$('m_tc').classList.toggle('on',!!touch);$('m_lb').classList.toggle('on',b);};
 $('mn').onclick=()=>{mt();$('menu').classList.add('on');};
 $('m_x').onclick=()=>$('menu').classList.remove('on');
-$('m_rv').onclick=()=>{rv=(rv+1)%3;if(wetG)wetG.gain.value=WET[rv];mt();};
+$('m_rv').onclick=()=>{rv=(rv+1)%3;if(wetG)wetG.gain.value=WET[rv];if(cvN){try{if(rv>0)master.connect(cvN);else master.disconnect(cvN);}catch(e){}}mt();};
 $('m_ly').onclick=()=>{const o=['',...Object.keys(V).filter(k=>k!=='drums')];lyr=o[(o.indexOf(lyr)+1)%o.length];mt();};
 $('m_tc').onclick=()=>{touch=touch?0:1;mt();};
 $('m_lb').onclick=()=>{document.body.classList.toggle('lbl');mt();};
