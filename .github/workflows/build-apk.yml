@@ -79,6 +79,14 @@ jobs:
           for f in A0 C8; do curl -fsSL -o docs/samples/$f.mp3 $B/$f.mp3; done
           for o in 1 2 3 4 5 6 7; do for n in C Ds Fs A; do curl -fsSL -o docs/samples/$n$o.mp3 $B/$n$o.mp3; done; done
           ls docs/samples | wc -l
+      - name: Bundle instrument soundfonts
+        run: |
+          mkdir -p docs/samples/sf
+          B=https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM
+          for n in electric_piano_1 church_organ string_ensemble_1 acoustic_guitar_nylon electric_bass_finger celesta orchestral_harp choir_aahs vibraphone violin flute; do
+            curl -fsSL -o docs/samples/sf/$n-mp3.js $B/$n-mp3.js || echo "skip $n"
+          done
+          du -sh docs/samples
       - run: npx cap sync android
       - name: Build debug APK
         run: cd android && chmod +x gradlew && ./gradlew assembleDebug
