@@ -130,6 +130,9 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opa
 .rails{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}#rail2{display:none}.two #rail2{display:block}#keys2{position:relative;height:100%}
 .sw{display:inline-block!important;width:14px;height:14px;border-radius:50%;margin-right:8px;vertical-align:-2px;box-shadow:0 0 0 2px rgba(255,255,255,.7),0 1px 3px rgba(0,0,0,.3)}
 .pulse{animation:pl .25s}@keyframes pl{0%{box-shadow:0 0 0 0 rgba(var(--accrgb),.7)}100%{box-shadow:0 0 0 12px rgba(var(--accrgb),0)}}
+#win{z-index:3}.rails{flex-direction:column-reverse}
+.top .btn{padding:0 8px}
+@media(min-width:700px){.top{flex-wrap:nowrap}.top>*{flex-shrink:0}.top #minirow{flex:1 1 90px;min-width:80px;flex-shrink:1}.snd{min-width:100px}.brand b{font-size:15px}#hud .pill{min-width:50px}}
 </style>
 </head>
 <body class="boot">
@@ -285,7 +288,7 @@ function lcd(){
  $('bpm').textContent=bpm;
  const s=$('st');
  s.textContent=recording?'● REC':playing?'▶ PLAY':(L.run?'LEARN':'READY');
- s.className=recording?'rec':playing?'play':'';
+ s.className='pill'+(recording?' rec':playing?' play':'');
 }
 function on(m,v,pb,vl){
  init();const ex=act.get(m);if(ex){if(ex.hd)return;ex.h.stop();act.delete(m);}
