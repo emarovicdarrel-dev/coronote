@@ -10,87 +10,19 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: 17
+          java-version: 21
       - run: npm install
+      - run: bash tools/bundle_assets.sh
       - run: npx cap add android
-      - name: Lock to landscape
-        run: sed -i 's/android:launchMode="singleTask"/android:launchMode="singleTask" android:screenOrientation="landscape"/' android/app/src/main/AndroidManifest.xml
-      - name: Fullscreen immersive mode
-        run: |
-          cat > android/app/src/main/java/com/emarovicdarrel/rossumpiano/MainActivity.java <<'EOF'
-          package com.emarovicdarrel.rossumpiano;
-
-          import android.os.Build;
-          import android.os.Bundle;
-          import android.view.WindowManager;
-          import androidx.core.view.WindowCompat;
-          import androidx.core.view.WindowInsetsCompat;
-          import androidx.core.view.WindowInsetsControllerCompat;
-          import com.getcapacitor.BridgeActivity;
-
-          public class MainActivity extends BridgeActivity {
-              @Override
-              public void onCreate(Bundle savedInstanceState) {
-                  super.onCreate(savedInstanceState);
-                  getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-                  immersive();
-              }
-
-              @Override
-              public void onWindowFocusChanged(boolean hasFocus) {
-                  super.onWindowFocusChanged(hasFocus);
-                  if (hasFocus) immersive();
-              }
-
-              private void immersive() {
-                  WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
-                  if (Build.VERSION.SDK_INT >= 28) {
-                      WindowManager.LayoutParams lp = getWindow().getAttributes();
-                      lp.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
-                      getWindow().setAttributes(lp);
-                  }
-                  WindowInsetsControllerCompat c = WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView());
-                  c.hide(WindowInsetsCompat.Type.systemBars());
-                  c.setSystemBarsBehavior(WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
-              }
-          }
-          EOF
-      - name: Piano icon and splash
-        run: |
-          sudo apt-get install -y imagemagick > /dev/null
-          R=android/app/src/main/res
-          rm -rf $R/mipmap-anydpi-v26
-          for p in mdpi:48 hdpi:72 xhdpi:96 xxhdpi:144 xxxhdpi:192; do
-            d=${p%%:*}; s=${p##*:}
-            for n in ic_launcher ic_launcher_round ic_launcher_foreground; do
-              convert docs/icon-round.png -resize ${s}x${s} $R/mipmap-$d/$n.png
-            done
-          done
-          convert -size 2732x2732 xc:'#eef2f9' docs/icon-round.png -gravity center -composite /tmp/splash.png
-          find $R -name 'splash.png' -exec cp /tmp/splash.png {} \;
-      - name: Bundle piano samples
-        run: |
-          mkdir -p docs/samples
-          B=https://tonejs.github.io/audio/salamander
-          for f in A0 C8; do curl -fsSL -o docs/samples/$f.mp3 $B/$f.mp3; done
-          for o in 1 2 3 4 5 6 7; do for n in C Ds Fs A; do curl -fsSL -o docs/samples/$n$o.mp3 $B/$n$o.mp3; done; done
-          ls docs/samples | wc -l
-      - name: Bundle instrument soundfonts
-        run: |
-          mkdir -p docs/samples/sf
-          B=https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM
-          for n in electric_piano_1 church_organ string_ensemble_1 acoustic_guitar_nylon electric_bass_finger celesta orchestral_harp choir_aahs vibraphone violin flute; do
-            curl -fsSL -o docs/samples/sf/$n-mp3.js $B/$n-mp3.js || echo "skip $n"
-          done
-          du -sh docs/samples
+      - run: bash tools/patch_android.sh
       - run: npx cap sync android
       - name: Build debug APK
         run: cd android && chmod +x gradlew && ./gradlew assembleDebug
       - uses: actions/upload-artifact@v4
         with:
-          name: psr-studio-apk
+          name: coronote-apk
           path: android/app/build/outputs/apk/debug/app-debug.apk

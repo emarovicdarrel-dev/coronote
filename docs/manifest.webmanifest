@@ -1,6 +1,6 @@
 {
-  "name": "Rossum Grand Piano",
-  "short_name": "Rossum",
+  "name": "Coronote",
+  "short_name": "Coronote",
   "start_url": "./index.html",
   "scope": "./",
   "display": "fullscreen",
