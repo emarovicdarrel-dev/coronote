@@ -44,15 +44,19 @@ JAVA
 M=android/app/src/main/AndroidManifest.xml
 sed -i 's/android:launchMode="singleTask"/android:launchMode="singleTask" android:screenOrientation="landscape"/' $M
 grep -q screenOrientation $M || echo "WARNING: could not lock landscape"
+if ! command -v convert >/dev/null 2>&1 && ! command -v magick >/dev/null 2>&1; then
+  sudo apt-get update -qq && sudo apt-get install -y -qq imagemagick
+fi
+IM=convert; command -v convert >/dev/null 2>&1 || IM=magick
 R=android/app/src/main/res
 rm -rf $R/mipmap-anydpi-v26
 for p in mdpi:48 hdpi:72 xhdpi:96 xxhdpi:144 xxxhdpi:192; do
   d=${p%%:*}; s=${p##*:}
   for n in ic_launcher ic_launcher_round ic_launcher_foreground; do
-    convert docs/icon-round.png -resize ${s}x${s} $R/mipmap-$d/$n.png
+    $IM docs/icon-round.png -resize ${s}x${s} $R/mipmap-$d/$n.png
   done
 done
-convert -size 2732x2732 xc:'#eef2f9' docs/icon-round.png -gravity center -composite /tmp/splash.png
+$IM -size 2732x2732 xc:'#eef2f9' docs/icon-round.png -gravity center -composite /tmp/splash.png
 find $R -name 'splash.png' -exec cp /tmp/splash.png {} \;
 sed -i "s/versionCode 1\$/versionCode ${GITHUB_RUN_NUMBER:-1}/" android/app/build.gradle
 if [ -n "${KEYSTORE_PATH:-}" ]; then
