@@ -1,7 +1,7 @@
-# Google Play listing draft (replace APP NAME after you choose the final name)
+# Google Play listing draft (final name: Coronote)
 
 ## App name (max 30 characters)
-APP NAME - Grand Piano
+Coronote - Grand Piano
 
 ## Short description (max 80 characters)
 A grand piano in your pocket: real sounds, learn songs, record and share.
@@ -43,6 +43,6 @@ Credits: Piano sounds by Alexander Holm (Salamander Grand Piano, CC BY 3.0). Oth
 - Target audience: 13 and over (avoid the "children" options unless you want the extra Families rules).
 - Content rating (IARC questionnaire): no violence, no sexual content, no user-generated content shared between users, no purchases -> expect "Everyone".
 - Data safety: collects no data, shares no data. The app does not use encryption-in-transit data collection; there is no network collection of user data.
-- Privacy policy URL: https://emarovicdarrel-dev.github.io/psr-studio/privacy.html (fill in your name and email in that page first)
+- Privacy policy URL: https://emarovicdarrel-dev.github.io/coronote/privacy.html (after you rename the GitHub repo to "coronote"; fill in your name and email in that page first)
 - Contact email: yours (shown publicly).
 - Screenshots: at least 2 phone screenshots (landscape is fine). Feature graphic: 1024 x 500 PNG. App icon: 512 x 512 PNG (docs/icon-512.png).
