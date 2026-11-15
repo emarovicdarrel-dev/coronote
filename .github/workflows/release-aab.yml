@@ -1,6 +1,8 @@
-name: Release AAB (for Google Play)
+name: Release Coronote (Play AAB + shareable APK)
 on:
   workflow_dispatch:
+permissions:
+  contents: write
 jobs:
   bundle:
     runs-on: ubuntu-latest
@@ -25,14 +27,25 @@ jobs:
           KEYSTORE_PATH: release.jks
         run: bash tools/patch_android.sh
       - run: npx cap sync android
-      - name: Build signed AAB
+      - name: Build signed AAB and APK
         env:
           KEYSTORE_PATH: release.jks
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-        run: cd android && chmod +x gradlew && ./gradlew bundleRelease
+        run: cd android && chmod +x gradlew && ./gradlew bundleRelease assembleRelease
       - uses: actions/upload-artifact@v4
         with:
           name: coronote-aab
           path: android/app/build/outputs/bundle/release/app-release.aab
+      - uses: actions/upload-artifact@v4
+        with:
+          name: coronote-apk-release
+          path: android/app/build/outputs/apk/release/app-release.apk
+      - name: Publish the APK as a public download
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cp android/app/build/outputs/apk/release/app-release.apk Coronote.apk
+          gh release delete latest -y --cleanup-tag || true
+          gh release create latest Coronote.apk --target "${{ github.sha }}" --title "Coronote" --notes "Download Coronote.apk, open it and install. Android may ask you to allow installs from this source."
